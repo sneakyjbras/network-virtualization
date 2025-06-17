@@ -95,34 +95,41 @@ EOF
   fi
 }
 
-# Function: HTTP check helper (from inside client)
+# Function: HTTP check helper (from inside client), shows which server responded
 check_url() {
   local DESC=$1 TARGET=$2
   echo
   echo ">>> Testing $DESC from client:"
   for i in {1..4}; do
+    # fetch full response body
+    resp=$(docker exec client curl -s "$TARGET")
+    # extract HTTP status
     code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" "$TARGET")
+    # pull out the <h1> line, which your web image uses to identify itself
+    served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
     if [ "$code" != "200" ]; then
       echo "   ✖ Request $i failed (HTTP $code)" >&2
       exit 1
     else
-      echo "   ✔ Request $i OK (HTTP $code)"
+      echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
     fi
   done
 }
 
-# Function: HTTP check helper on host
+# Function: HTTP check helper on the host, shows which server responded
 check_host_url() {
   local DESC=$1 URL=$2
   echo
   echo ">>> Testing $DESC on host:"
   for i in {1..4}; do
+    resp=$(curl -s "$URL")
     code=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+    served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
     if [ "$code" != "200" ]; then
       echo "   ✖ Host request $i failed (HTTP $code)" >&2
       exit 1
     else
-      echo "   ✔ Host request $i OK (HTTP $code)"
+      echo "   ✔ Host request $i OK (HTTP $code) — served by: $served_by"
     fi
   done
 }
@@ -250,12 +257,14 @@ add_web3
 echo
 echo ">>> Testing load balancing with web3 added:"
 for i in {1..6}; do
+  resp=$(docker exec client curl -s haproxy:80)
   code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
+  served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
   if [ "$code" != "200" ]; then
     echo "   ✖ Request $i failed (HTTP $code)" >&2
     exit 1
   else
-    echo "   ✔ Request $i OK (HTTP $code)"
+    echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
   fi
 done
 
