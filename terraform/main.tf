@@ -19,13 +19,28 @@ resource "docker_network" "labnet" {
   }
 }
 
-resource "docker_image" "web_img" {
-  name = "nginxdemos/hello:latest"
+# Use nginx:alpine so we can write custom HTML on startup
+resource "docker_image" "nginx_img" {
+  name = "nginx:alpine"
 }
 
 resource "docker_container" "web1" {
   name  = "web1"
-  image = docker_image.web_img.name
+  image = docker_image.nginx_img.latest
+
+  command = [
+    "/bin/sh", "-c",
+    <<-EOC
+      IP="$(hostname -i)"
+      cat <<EOF > /usr/share/nginx/html/index.html
+      <!DOCTYPE html>
+      <html><head><title>Served by $${IP}</title></head>
+      <body><h1>$${IP}</h1></body></html>
+      EOF
+      exec nginx -g 'daemon off;'
+    EOC
+  ]
+
   networks_advanced {
     name         = docker_network.labnet.name
     ipv4_address = "172.28.0.11"
@@ -34,10 +49,47 @@ resource "docker_container" "web1" {
 
 resource "docker_container" "web2" {
   name  = "web2"
-  image = docker_image.web_img.name
+  image = docker_image.nginx_img.latest
+
+  command = [
+    "/bin/sh", "-c",
+    <<-EOC
+      IP="$(hostname -i)"
+      cat <<EOF > /usr/share/nginx/html/index.html
+      <!DOCTYPE html>
+      <html><head><title>Served by $${IP}</title></head>
+      <body><h1>$${IP}</h1></body></html>
+      EOF
+      exec nginx -g 'daemon off;'
+    EOC
+  ]
+
   networks_advanced {
     name         = docker_network.labnet.name
     ipv4_address = "172.28.0.12"
+  }
+}
+
+resource "docker_container" "web3" {
+  name  = "web3"
+  image = docker_image.nginx_img.latest
+
+  command = [
+    "/bin/sh", "-c",
+    <<-EOC
+      IP="$(hostname -i)"
+      cat <<EOF > /usr/share/nginx/html/index.html
+      <!DOCTYPE html>
+      <html><head><title>Served by $${IP}</title></head>
+      <body><h1>$${IP}</h1></body></html>
+      EOF
+      exec nginx -g 'daemon off;'
+    EOC
+  ]
+
+  networks_advanced {
+    name         = docker_network.labnet.name
+    ipv4_address = "172.28.0.13"
   }
 }
 
@@ -47,15 +99,18 @@ resource "docker_image" "haproxy_img" {
 
 resource "docker_container" "haproxy" {
   name  = "haproxy"
-  image = docker_image.haproxy_img.name
+  image = docker_image.haproxy_img.latest
+
   networks_advanced {
     name         = docker_network.labnet.name
     ipv4_address = "172.28.0.10"
   }
+
   ports {
     internal = 80
     external = 8080
   }
+
   volumes {
     host_path      = abspath("${path.module}/haproxy.cfg")
     container_path = "/usr/local/etc/haproxy/haproxy.cfg"
@@ -68,20 +123,11 @@ resource "docker_image" "curl" {
 
 resource "docker_container" "client" {
   name    = "client"
-  image   = docker_image.curl.name
+  image   = docker_image.curl.latest
   command = ["sleep", "infinity"]
+
   networks_advanced {
     name         = docker_network.labnet.name
     ipv4_address = "172.28.0.20"
-  }
-}
-
-# Added web3 container
-resource "docker_container" "web3" {
-  name  = "web3"
-  image = docker_image.web_img.name
-  networks_advanced {
-    name         = docker_network.labnet.name
-    ipv4_address = "172.28.0.13"
   }
 }

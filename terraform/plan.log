@@ -21,7 +21,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m gateway          = (known after apply)
       [32m+[0m[0m hostname         = (known after apply)
       [32m+[0m[0m id               = (known after apply)
-      [32m+[0m[0m image            = "curlimages/curl:latest"
+      [32m+[0m[0m image            = (known after apply)
       [32m+[0m[0m ip_address       = (known after apply)
       [32m+[0m[0m ip_prefix_length = (known after apply)
       [32m+[0m[0m ipc_mode         = (known after apply)
@@ -60,7 +60,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m gateway          = (known after apply)
       [32m+[0m[0m hostname         = (known after apply)
       [32m+[0m[0m id               = (known after apply)
-      [32m+[0m[0m image            = "haproxy:latest"
+      [32m+[0m[0m image            = (known after apply)
       [32m+[0m[0m ip_address       = (known after apply)
       [32m+[0m[0m ip_prefix_length = (known after apply)
       [32m+[0m[0m ipc_mode         = (known after apply)
@@ -103,7 +103,19 @@ Terraform will perform the following actions:
 [0m  [32m+[0m[0m resource "docker_container" "web1" {
       [32m+[0m[0m attach           = false
       [32m+[0m[0m bridge           = (known after apply)
-      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m command          = [
+          [32m+[0m[0m "/bin/sh",
+          [32m+[0m[0m "-c",
+          [32m+[0m[0m <<-EOT
+                IP="$(hostname -i)"
+                cat <<EOF > /usr/share/nginx/html/index.html
+                <!DOCTYPE html>
+                <html><head><title>Served by ${IP}</title></head>
+                <body><h1>${IP}</h1></body></html>
+                EOF
+                exec nginx -g 'daemon off;'
+            EOT,
+        ]
       [32m+[0m[0m container_logs   = (known after apply)
       [32m+[0m[0m dns              = (known after apply)
       [32m+[0m[0m dns_opts         = (known after apply)
@@ -112,7 +124,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m gateway          = (known after apply)
       [32m+[0m[0m hostname         = (known after apply)
       [32m+[0m[0m id               = (known after apply)
-      [32m+[0m[0m image            = "nginxdemos/hello:latest"
+      [32m+[0m[0m image            = (known after apply)
       [32m+[0m[0m ip_address       = (known after apply)
       [32m+[0m[0m ip_prefix_length = (known after apply)
       [32m+[0m[0m ipc_mode         = (known after apply)
@@ -142,7 +154,19 @@ Terraform will perform the following actions:
 [0m  [32m+[0m[0m resource "docker_container" "web2" {
       [32m+[0m[0m attach           = false
       [32m+[0m[0m bridge           = (known after apply)
-      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m command          = [
+          [32m+[0m[0m "/bin/sh",
+          [32m+[0m[0m "-c",
+          [32m+[0m[0m <<-EOT
+                IP="$(hostname -i)"
+                cat <<EOF > /usr/share/nginx/html/index.html
+                <!DOCTYPE html>
+                <html><head><title>Served by ${IP}</title></head>
+                <body><h1>${IP}</h1></body></html>
+                EOF
+                exec nginx -g 'daemon off;'
+            EOT,
+        ]
       [32m+[0m[0m container_logs   = (known after apply)
       [32m+[0m[0m dns              = (known after apply)
       [32m+[0m[0m dns_opts         = (known after apply)
@@ -151,7 +175,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m gateway          = (known after apply)
       [32m+[0m[0m hostname         = (known after apply)
       [32m+[0m[0m id               = (known after apply)
-      [32m+[0m[0m image            = "nginxdemos/hello:latest"
+      [32m+[0m[0m image            = (known after apply)
       [32m+[0m[0m ip_address       = (known after apply)
       [32m+[0m[0m ip_prefix_length = (known after apply)
       [32m+[0m[0m ipc_mode         = (known after apply)
@@ -181,7 +205,19 @@ Terraform will perform the following actions:
 [0m  [32m+[0m[0m resource "docker_container" "web3" {
       [32m+[0m[0m attach           = false
       [32m+[0m[0m bridge           = (known after apply)
-      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m command          = [
+          [32m+[0m[0m "/bin/sh",
+          [32m+[0m[0m "-c",
+          [32m+[0m[0m <<-EOT
+                IP="$(hostname -i)"
+                cat <<EOF > /usr/share/nginx/html/index.html
+                <!DOCTYPE html>
+                <html><head><title>Served by ${IP}</title></head>
+                <body><h1>${IP}</h1></body></html>
+                EOF
+                exec nginx -g 'daemon off;'
+            EOT,
+        ]
       [32m+[0m[0m container_logs   = (known after apply)
       [32m+[0m[0m dns              = (known after apply)
       [32m+[0m[0m dns_opts         = (known after apply)
@@ -190,7 +226,7 @@ Terraform will perform the following actions:
       [32m+[0m[0m gateway          = (known after apply)
       [32m+[0m[0m hostname         = (known after apply)
       [32m+[0m[0m id               = (known after apply)
-      [32m+[0m[0m image            = "nginxdemos/hello:latest"
+      [32m+[0m[0m image            = (known after apply)
       [32m+[0m[0m ip_address       = (known after apply)
       [32m+[0m[0m ip_prefix_length = (known after apply)
       [32m+[0m[0m ipc_mode         = (known after apply)
@@ -230,11 +266,11 @@ Terraform will perform the following actions:
       [32m+[0m[0m name   = "haproxy:latest"
     }
 
-[1m  # docker_image.web_img[0m will be created
-[0m  [32m+[0m[0m resource "docker_image" "web_img" {
+[1m  # docker_image.nginx_img[0m will be created
+[0m  [32m+[0m[0m resource "docker_image" "nginx_img" {
       [32m+[0m[0m id     = (known after apply)
       [32m+[0m[0m latest = (known after apply)
-      [32m+[0m[0m name   = "nginxdemos/hello:latest"
+      [32m+[0m[0m name   = "nginx:alpine"
     }
 
 [1m  # docker_network.labnet[0m will be created
