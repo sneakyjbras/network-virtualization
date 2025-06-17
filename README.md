@@ -204,3 +204,140 @@ echo "=== Connectivity Tests ==="
 - **veth pairs** simulate physical links between those nodes.
 - **Static routing** and **IP forwarding** allow cross-namespace communication.
 - This lab emulates a basic **routed network**, completely in Linux userspace.
+
+## Step 3: Management of the Docker Network
+
+In this step, we encountered and resolved a conflict between Terraform and an existing Docker network named `lab3b_net`. Below is a detailed account of the problem, our chosen resolution path, verification steps, alternative strategies, and the lessons learned.
+
+---
+
+### 3.1 Issue Encountered
+
+When invoking Terraform to apply our configuration:
+```bash
+terraform apply
+```
+we received the following error:
+```text
+Error: Unable to create network: 
+network with name lab3b_net already exists
+```
+This indicates that Docker already had a network resource called `lab3b_net` which Terraform was unaware of, causing a naming conflict.
+
+---
+
+### 3.2 Why This Happens
+
+- **Terraform’s State vs. Reality**  
+  Terraform tracks resources in its state file (`terraform.tfstate`). If a resource exists in the real world (Docker) but is *not* recorded in the state, Terraform believes it needs to be created.
+- **Docker’s Idempotency Model**  
+  Unlike some cloud providers, Docker will not overwrite or merge networks with identical names; it will simply refuse to create a second network of the same name.
+
+---
+
+### 3.3 Chosen Resolution: Importing the Existing Network
+
+Rather than deleting or renaming, we opted to **import** the existing network into Terraform’s state. This aligns the real-world resource with Terraform’s model, preserving any existing containers or links that depend on it.
+
+1. **Inspect the network in Docker**  
+   Verify that `lab3b_net` exists:
+   ```bash
+   docker network ls | grep lab3b_net
+   ```
+   You should see a line resembling:
+   ```
+   ab12cd34ef56   lab3b_net   bridge   local
+   ```
+
+2. **Define the Terraform resource**  
+   Ensure your `main.tf` includes:
+   ```hcl
+   resource "docker_network" "labnet" {
+     name   = "lab3b_net"
+     driver = "bridge"
+   }
+   ```
+
+3. **Initialize (if necessary)**  
+   ```bash
+   terraform init
+   ```
+
+4. **Import into state**  
+   ```bash
+   terraform import docker_network.labnet lab3b_net
+   ```
+   - **What happens under the hood?**  
+     Terraform records the real Docker network’s unique ID into its state file, effectively “adopting” that network.
+
+5. **Inspect the imported state**  
+   ```bash
+   terraform state show docker_network.labnet
+   ```
+   You should see output mapping fields such as `id`, `name`, and `driver`.
+
+6. **Plan & Apply**  
+   ```bash
+   terraform plan
+   terraform apply
+   ```
+   Now, `plan` should indicate “No changes. Infrastructure is up-to-date.” and `apply` will complete without errors.
+
+---
+
+### 3.4 Verification
+
+- **Confirm Terraform-managed status**  
+  The `terraform state list` command shows:
+  ```bash
+  $ terraform state list
+  docker_network.labnet
+  ```
+- **Ensure no drift**  
+  Running `terraform plan` again yields:
+  ```text
+  No changes. Infrastructure is up-to-date.
+  ```
+- **Test connectivity**  
+  Launch a test container attached to `lab3b_net` to verify networking:
+  ```bash
+  docker run --rm --network lab3b_net busybox ping -c 1 <another-container>
+  ```
+
+---
+
+### 3.5 Alternative Strategies
+
+While importing is non-destructive, other approaches include:
+
+1. **Manual Removal**  
+   ```bash
+   docker network rm lab3b_net
+   terraform apply
+   ```
+   > *Risk:* Containers or services attached to the network may be disrupted.
+
+2. **Rename in Terraform**  
+   Change the `name` attribute in `main.tf`:
+   ```hcl
+   name = "lab3b_net_v2"
+   ```
+   Then apply.  
+   > *Use case:* You need a fresh network without affecting the existing one.
+
+---
+
+### 3.6 Lessons Learned
+
+- **State Awareness**  
+  Always inspect existing infrastructure before provisioning to detect naming collisions.
+- **Power of `terraform import`**  
+  Enables seamless alignment of Terraform state with manually created or legacy resources.
+- **Idempotency**  
+  Proper state management guarantees that repeated `apply` operations are safe and predictable.
+- **Documentation**  
+  Clearly document import steps in your team’s runbooks to aid future troubleshooting.
+
+---
+
+By importing the Docker network rather than deleting or renaming it, we preserved existing service relationships, achieved full Terraform management of the resource, and maintained an idempotent, declarative infrastructure workflow.
