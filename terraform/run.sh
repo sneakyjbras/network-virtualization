@@ -196,21 +196,21 @@ add_web3() {
   generate_haproxy_cfg
 
   echo
-  echo ">>> Terraform plan for web3 only (logged to plan_web3.log):"
+  echo ">>> Terraform plan for web3 only (logged to plan.log):"
   terraform plan \
     -var enable_web3=true \
     -target=docker_container.web3 \
     -input=false \
-  | tee plan_web3.log
+  | tee plan.log
 
   echo
-  echo ">>> Terraform apply for web3 only (logged to apply_web3.log):"
+  echo ">>> Terraform apply for web3 only (logged to apply.log):"
   terraform apply \
     -var enable_web3=true \
     -target=docker_container.web3 \
     -auto-approve \
     -input=false \
-  | tee apply_web3.log
+  | tee apply.log
 }
 
 test_web3() {
