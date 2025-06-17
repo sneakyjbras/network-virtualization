@@ -108,3 +108,26 @@ resource "docker_container" "client" {
     ipv4_address = "172.28.0.20"
   }
 }
+
+resource "docker_container" "web3" {
+  name  = "web3"
+  image = docker_image.nginx_img.latest
+
+  networks_advanced {
+    name         = docker_network.labnet.name
+    ipv4_address = "172.28.0.13"
+  }
+
+  command = [
+    "/bin/sh", "-c",
+<<-EOC
+IP="$(hostname -i)"
+cat <<EOF > /usr/share/nginx/html/index.html
+<!DOCTYPE html>
+<html><head><title>Served by $${IP}</title></head>
+<body><h1>$${IP}</h1></body></html>
+EOF
+exec nginx -g 'daemon off;'
+EOC
+  ]
+}

@@ -2,7 +2,6 @@
 # run_lab3b_all_in_one_improved.sh - Enhanced orchestration for Lab3B
 # Usage: sudo bash run_lab3b_all_in_one_improved.sh
 
-set -euo pipefail
 trap 'cleanup_on_failure' ERR
 
 NET_NAME="lab3b_net"
@@ -49,7 +48,7 @@ import_network() {
 import_containers() {
   echo
   echo ">>> Checking for existing Docker containers…"
-  for NAME in web1 web2 haproxy client web3; do
+  for NAME in web1 web2 haproxy client; do
     CON_ID=$(docker inspect --format='{{.Id}}' "$NAME" 2>/dev/null || true)
     if [ -n "$CON_ID" ]; then
       if ! terraform state show "docker_container.${NAME}" >/dev/null 2>&1; then
@@ -67,7 +66,7 @@ import_containers() {
 # Function: generate a fresh haproxy.cfg using DNS names
 generate_haproxy_cfg() {
   echo
-  echo ">>> Generating haproxy.cfg for web1/web2${ENABLE_WEB3:+/web3}…"
+  echo ">>> Generating haproxy.cfg for web1/web2"
   cat > haproxy.cfg << 'EOF'
 global
     daemon
@@ -88,11 +87,6 @@ backend web_servers
     server web1 web1:80 check
     server web2 web2:80 check
 EOF
-
-  # if web3 already in state, append it
-  if terraform state show docker_container.web3 >/dev/null 2>&1; then
-    echo "    server web3 web3:80 check" >> haproxy.cfg
-  fi
 }
 
 # Function: HTTP check helper (from inside client), shows which server responded
@@ -166,7 +160,7 @@ test_lb() {
 
   echo
   echo ">>> Waiting for containers to initialize..."
-  sleep 5
+  sleep 2
 
   check_url "load balancing" haproxy:80
   check_host_url "host access via port 8080" http://localhost:8080
@@ -201,12 +195,12 @@ resilience_test() {
 add_web3() {
   echo
   echo ">>> Adding web3 resource to main.tf (idempotent)"
-  if ! grep -q 'docker_container" "web3"' main.tf; then
-    cat << 'EOF' >> main.tf
+  if ! grep -q 'resource "docker_container" "web3"' main.tf; then
+     cat << 'EOF' >> main.tf
 
 resource "docker_container" "web3" {
   name  = "web3"
-  image = docker_image.web_img.name
+  image = docker_image.nginx_img.latest
   networks_advanced {
     name = docker_network.labnet.name
   }
