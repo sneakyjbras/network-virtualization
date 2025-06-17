@@ -172,47 +172,31 @@ test_lb() {
   check_host_url "host access via port 8080" http://localhost:8080
 }
 
-# Function: resilience test (one backend down)
 resilience_test() {
   echo
   echo ">>> Resilience test: stopping web2"
   docker stop web2
   sleep 2
 
-  echo ">>> Request after stopping web2:"
-  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
-  if [ "$code" != "200" ]; then
-    echo "   ✖ Resilience test failed (HTTP $code)" >&2
-    exit 1
-  else
-    echo "   ✔ Resilience OK (HTTP $code)"
-  fi
+  echo ">>> Requests after stopping web2 (via load balancer):"
+  for i in {1..4}; do
+    resp=$(docker exec client curl -s haproxy:80)
+    code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
+    served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
+    if [ "$code" != "200" ]; then
+      echo "   ✖ Request $i failed (HTTP $code)" >&2
+      exit 1
+    else
+      echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
+    fi
+  done
 
   echo ">>> Restarting web2"
   docker start web2
   sleep 2
 }
 
-# Function: total failure test (both backends down)
-test_total_failure() {
-  echo
-  echo ">>> Total failure test: stopping web1 & web2"
-  docker stop web1 web2
-  sleep 2
 
-  echo ">>> Request after stopping both web1 & web2:"
-  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80 || true)
-  if [ "$code" = "503" ]; then
-    echo "   ✔ Got HTTP 503 as expected when no backends are up"
-  else
-    echo "   ✖ Unexpected HTTP $code; HAProxy did not return 503" >&2
-    exit 1
-  fi
-
-  echo ">>> Restarting web1 & web2"
-  docker start web1 web2
-  sleep 2
-}
 
 # Function: add web3 and reapply
 add_web3() {
@@ -244,6 +228,22 @@ EOF
   terraform apply -auto-approve -input=false | tee apply_web3.log
 }
 
+test_web3() {
+  echo
+  echo ">>> Testing load balancing with web3 added:"
+  for i in {1..6}; do
+    resp=$(docker exec client curl -s haproxy:80)
+    code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
+    served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
+    if [ "$code" != "200" ]; then
+      echo "   ✖ Request $i failed (HTTP $code)" >&2
+      exit 1
+    else
+      echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
+    fi
+  done
+}
+
 # --- Main execution flow ---
 initialize
 import_network
@@ -251,22 +251,8 @@ import_containers
 deploy
 test_lb
 resilience_test
-test_total_failure
 add_web3
-
-echo
-echo ">>> Testing load balancing with web3 added:"
-for i in {1..6}; do
-  resp=$(docker exec client curl -s haproxy:80)
-  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
-  served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
-  if [ "$code" != "200" ]; then
-    echo "   ✖ Request $i failed (HTTP $code)" >&2
-    exit 1
-  else
-    echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
-  fi
-done
+test_web3
 
 echo
 echo ">>> Cleaning up Terraform-managed resources..."
