@@ -1,237 +1,180 @@
-[0m[1mdocker_image.web_img: Refreshing state... [id=sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6nginxdemos/hello:latest][0m
-[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
-[0m[1mdocker_image.curl: Refreshing state... [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
-[0m[1mdocker_network.labnet: Refreshing state... [id=e3afc5d275f819d3714eb13de35936210d687fc80884e4b397ff4564baa02811][0m
-[0m[1mdocker_container.client: Refreshing state... [id=6488f576dd646cfb6452ef29f467cb2c4bbe86374504ce0501a4b7639dac04c3][0m
-[0m[1mdocker_container.haproxy: Refreshing state... [id=b775c80759829cc22abfdb557b5c1f35842da2a0ea415d3ba76894fd480a9a64][0m
-[0m[1mdocker_container.web3: Refreshing state... [id=803f13052a934b3d5093ed5a14f8d95881afd5410619085f65af9515ead71494][0m
-[0m[1mdocker_container.web2: Refreshing state... [id=53c322431218a63c7cb8a95800f1d4f91fb3ff0e1f7071bbe20dc3051c4e2ee6][0m
-[0m[1mdocker_container.web1: Refreshing state... [id=9c9a446ed30d45289d6d8b64e2c423ac9629ee80457bfd90b1d82ece88013cc5][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
   [32m+[0m create[0m
-[31m-[0m/[32m+[0m destroy and then create replacement[0m
 
 Terraform will perform the following actions:
 
-[1m  # docker_container.client[0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "docker_container" "client" {
-      [32m+[0m[0m bridge            = (known after apply)
-      [32m+[0m[0m container_logs    = (known after apply)
-      [31m-[0m[0m cpu_shares        = 0 [90m-> null[0m[0m
-      [33m~[0m[0m dns               = [] -> (known after apply)
-      [33m~[0m[0m dns_opts          = [] -> (known after apply)
-      [31m-[0m[0m dns_search        = [] [90m-> null[0m[0m
-      [33m~[0m[0m entrypoint        = [
-          [31m-[0m[0m "/entrypoint.sh",
-        ] -> (known after apply)
-      [32m+[0m[0m exit_code         = (known after apply)
-      [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
-      [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "6488f576dd64" -> (known after apply)
-      [33m~[0m[0m id                = "6488f576dd646cfb6452ef29f467cb2c4bbe86374504ce0501a4b7639dac04c3" -> (known after apply)
-      [33m~[0m[0m image             = "sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044" [33m->[0m[0m "curlimages/curl:latest" [31m# forces replacement[0m[0m
-      [33m~[0m[0m ip_address        = "172.28.0.20" -> (known after apply)
-      [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
-      [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
-      [31m-[0m[0m links             = [] [90m-> null[0m[0m
-      [33m~[0m[0m log_driver        = "json-file" -> (known after apply)
-      [33m~[0m[0m log_opts          = {} -> (known after apply)
-      [31m-[0m[0m max_retry_count   = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory            = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory_swap       = 0 [90m-> null[0m[0m
-        name              = "client"
-      [33m~[0m[0m network_data      = [
-          [31m-[0m[0m {
-              [31m-[0m[0m gateway          = "172.28.0.1"
-              [31m-[0m[0m ip_address       = "172.28.0.20"
-              [31m-[0m[0m ip_prefix_length = 16
-              [31m-[0m[0m network_name     = "lab3b_net"
-            },
-        ] -> (known after apply)
-      [31m-[0m[0m network_mode      = "bridge" [90m-> null[0m[0m [31m# forces replacement[0m[0m
-      [31m-[0m[0m privileged        = false [90m-> null[0m[0m
-      [31m-[0m[0m publish_all_ports = false [90m-> null[0m[0m
-      [33m~[0m[0m shm_size          = 64 -> (known after apply)
-      [31m-[0m[0m sysctls           = {} [90m-> null[0m[0m
-      [31m-[0m[0m tmpfs             = {} [90m-> null[0m[0m
-      [33m~[0m[0m user              = "curl_user" -> (known after apply)
-      [33m~[0m[0m working_dir       = "/home/curl_user" -> (known after apply)
-        [90m# (12 unchanged attributes hidden)[0m[0m
+[1m  # docker_container.client[0m will be created
+[0m  [32m+[0m[0m resource "docker_container" "client" {
+      [32m+[0m[0m attach           = false
+      [32m+[0m[0m bridge           = (known after apply)
+      [32m+[0m[0m command          = [
+          [32m+[0m[0m "sleep",
+          [32m+[0m[0m "infinity",
+        ]
+      [32m+[0m[0m container_logs   = (known after apply)
+      [32m+[0m[0m dns              = (known after apply)
+      [32m+[0m[0m dns_opts         = (known after apply)
+      [32m+[0m[0m entrypoint       = (known after apply)
+      [32m+[0m[0m exit_code        = (known after apply)
+      [32m+[0m[0m gateway          = (known after apply)
+      [32m+[0m[0m hostname         = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m image            = "curlimages/curl:latest"
+      [32m+[0m[0m ip_address       = (known after apply)
+      [32m+[0m[0m ip_prefix_length = (known after apply)
+      [32m+[0m[0m ipc_mode         = (known after apply)
+      [32m+[0m[0m log_driver       = (known after apply)
+      [32m+[0m[0m log_opts         = (known after apply)
+      [32m+[0m[0m logs             = false
+      [32m+[0m[0m must_run         = true
+      [32m+[0m[0m name             = "client"
+      [32m+[0m[0m network_data     = (known after apply)
+      [32m+[0m[0m read_only        = false
+      [32m+[0m[0m restart          = "no"
+      [32m+[0m[0m rm               = false
+      [32m+[0m[0m shm_size         = (known after apply)
+      [32m+[0m[0m start            = true
+      [32m+[0m[0m user             = (known after apply)
+      [32m+[0m[0m working_dir      = (known after apply)
 
-        [90m# (1 unchanged block hidden)[0m[0m
+      [32m+[0m[0m networks_advanced {
+          [32m+[0m[0m aliases      = []
+          [32m+[0m[0m ipv4_address = "172.28.0.20"
+          [32m+[0m[0m name         = "lab3b_net"
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
     }
 
-[1m  # docker_container.haproxy[0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "docker_container" "haproxy" {
-      [32m+[0m[0m bridge            = (known after apply)
-      [33m~[0m[0m command           = [
-          [31m-[0m[0m "haproxy",
-          [31m-[0m[0m "-f",
-          [31m-[0m[0m "/usr/local/etc/haproxy/haproxy.cfg",
-        ] -> (known after apply)
-      [32m+[0m[0m container_logs    = (known after apply)
-      [31m-[0m[0m cpu_shares        = 0 [90m-> null[0m[0m
-      [33m~[0m[0m dns               = [] -> (known after apply)
-      [33m~[0m[0m dns_opts          = [] -> (known after apply)
-      [31m-[0m[0m dns_search        = [] [90m-> null[0m[0m
-      [33m~[0m[0m entrypoint        = [
-          [31m-[0m[0m "docker-entrypoint.sh",
-        ] -> (known after apply)
-      [32m+[0m[0m exit_code         = (known after apply)
-      [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
-      [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "b775c8075982" -> (known after apply)
-      [33m~[0m[0m id                = "b775c80759829cc22abfdb557b5c1f35842da2a0ea415d3ba76894fd480a9a64" -> (known after apply)
-      [33m~[0m[0m image             = "sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591" [33m->[0m[0m "haproxy:latest" [31m# forces replacement[0m[0m
-      [33m~[0m[0m ip_address        = "172.28.0.10" -> (known after apply)
-      [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
-      [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
-      [31m-[0m[0m links             = [] [90m-> null[0m[0m
-      [33m~[0m[0m log_driver        = "json-file" -> (known after apply)
-      [33m~[0m[0m log_opts          = {} -> (known after apply)
-      [31m-[0m[0m max_retry_count   = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory            = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory_swap       = 0 [90m-> null[0m[0m
-        name              = "haproxy"
-      [33m~[0m[0m network_data      = [
-          [31m-[0m[0m {
-              [31m-[0m[0m gateway          = "172.28.0.1"
-              [31m-[0m[0m ip_address       = "172.28.0.10"
-              [31m-[0m[0m ip_prefix_length = 16
-              [31m-[0m[0m network_name     = "lab3b_net"
-            },
-        ] -> (known after apply)
-      [31m-[0m[0m network_mode      = "bridge" [90m-> null[0m[0m [31m# forces replacement[0m[0m
-      [31m-[0m[0m privileged        = false [90m-> null[0m[0m
-      [31m-[0m[0m publish_all_ports = false [90m-> null[0m[0m
-      [33m~[0m[0m shm_size          = 64 -> (known after apply)
-      [31m-[0m[0m sysctls           = {} [90m-> null[0m[0m
-      [31m-[0m[0m tmpfs             = {} [90m-> null[0m[0m
-      [33m~[0m[0m user              = "haproxy" -> (known after apply)
-      [33m~[0m[0m working_dir       = "/var/lib/haproxy" -> (known after apply)
-        [90m# (11 unchanged attributes hidden)[0m[0m
+[1m  # docker_container.haproxy[0m will be created
+[0m  [32m+[0m[0m resource "docker_container" "haproxy" {
+      [32m+[0m[0m attach           = false
+      [32m+[0m[0m bridge           = (known after apply)
+      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m container_logs   = (known after apply)
+      [32m+[0m[0m dns              = (known after apply)
+      [32m+[0m[0m dns_opts         = (known after apply)
+      [32m+[0m[0m entrypoint       = (known after apply)
+      [32m+[0m[0m exit_code        = (known after apply)
+      [32m+[0m[0m gateway          = (known after apply)
+      [32m+[0m[0m hostname         = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m image            = "haproxy:latest"
+      [32m+[0m[0m ip_address       = (known after apply)
+      [32m+[0m[0m ip_prefix_length = (known after apply)
+      [32m+[0m[0m ipc_mode         = (known after apply)
+      [32m+[0m[0m log_driver       = (known after apply)
+      [32m+[0m[0m log_opts         = (known after apply)
+      [32m+[0m[0m logs             = false
+      [32m+[0m[0m must_run         = true
+      [32m+[0m[0m name             = "haproxy"
+      [32m+[0m[0m network_data     = (known after apply)
+      [32m+[0m[0m read_only        = false
+      [32m+[0m[0m restart          = "no"
+      [32m+[0m[0m rm               = false
+      [32m+[0m[0m shm_size         = (known after apply)
+      [32m+[0m[0m start            = true
+      [32m+[0m[0m user             = (known after apply)
+      [32m+[0m[0m working_dir      = (known after apply)
 
-      [31m-[0m[0m volumes { [31m# forces replacement[0m[0m
-          [31m-[0m[0m container_path = "/usr/local/etc/haproxy/haproxy.cfg" [90m-> null[0m[0m
-          [31m-[0m[0m host_path      = "/home/jbras/network-virtualization/scripts/terraform/haproxy.cfg" [90m-> null[0m[0m
-          [31m-[0m[0m read_only      = false [90m-> null[0m[0m
-            [90m# (2 unchanged attributes hidden)[0m[0m
+      [32m+[0m[0m networks_advanced {
+          [32m+[0m[0m aliases      = []
+          [32m+[0m[0m ipv4_address = "172.28.0.10"
+          [32m+[0m[0m name         = "lab3b_net"
+            [90m# (1 unchanged attribute hidden)[0m[0m
         }
-      [32m+[0m[0m volumes { [31m# forces replacement[0m[0m
+
+      [32m+[0m[0m ports {
+          [32m+[0m[0m external = 8080
+          [32m+[0m[0m internal = 80
+          [32m+[0m[0m ip       = "0.0.0.0"
+          [32m+[0m[0m protocol = "tcp"
+        }
+
+      [32m+[0m[0m volumes {
           [32m+[0m[0m container_path = "/usr/local/etc/haproxy/haproxy.cfg"
           [32m+[0m[0m host_path      = "/home/jbras/network-virtualization/terraform/haproxy.cfg"
             [90m# (2 unchanged attributes hidden)[0m[0m
         }
-
-        [90m# (2 unchanged blocks hidden)[0m[0m
     }
 
-[1m  # docker_container.web1[0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "docker_container" "web1" {
-      [32m+[0m[0m bridge            = (known after apply)
-      [33m~[0m[0m command           = [
-          [31m-[0m[0m "nginx",
-          [31m-[0m[0m "-g",
-          [31m-[0m[0m "daemon off;",
-        ] -> (known after apply)
-      [32m+[0m[0m container_logs    = (known after apply)
-      [31m-[0m[0m cpu_shares        = 0 [90m-> null[0m[0m
-      [33m~[0m[0m dns               = [] -> (known after apply)
-      [33m~[0m[0m dns_opts          = [] -> (known after apply)
-      [31m-[0m[0m dns_search        = [] [90m-> null[0m[0m
-      [33m~[0m[0m entrypoint        = [
-          [31m-[0m[0m "/docker-entrypoint.sh",
-        ] -> (known after apply)
-      [32m+[0m[0m exit_code         = (known after apply)
-      [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
-      [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "9c9a446ed30d" -> (known after apply)
-      [33m~[0m[0m id                = "9c9a446ed30d45289d6d8b64e2c423ac9629ee80457bfd90b1d82ece88013cc5" -> (known after apply)
-      [33m~[0m[0m image             = "sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6" [33m->[0m[0m "nginxdemos/hello:latest" [31m# forces replacement[0m[0m
-      [33m~[0m[0m ip_address        = "172.28.0.11" -> (known after apply)
-      [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
-      [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
-      [31m-[0m[0m links             = [] [90m-> null[0m[0m
-      [33m~[0m[0m log_driver        = "json-file" -> (known after apply)
-      [33m~[0m[0m log_opts          = {} -> (known after apply)
-      [31m-[0m[0m max_retry_count   = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory            = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory_swap       = 0 [90m-> null[0m[0m
-        name              = "web1"
-      [33m~[0m[0m network_data      = [
-          [31m-[0m[0m {
-              [31m-[0m[0m gateway          = "172.28.0.1"
-              [31m-[0m[0m ip_address       = "172.28.0.11"
-              [31m-[0m[0m ip_prefix_length = 16
-              [31m-[0m[0m network_name     = "lab3b_net"
-            },
-        ] -> (known after apply)
-      [31m-[0m[0m network_mode      = "bridge" [90m-> null[0m[0m [31m# forces replacement[0m[0m
-      [31m-[0m[0m privileged        = false [90m-> null[0m[0m
-      [31m-[0m[0m publish_all_ports = false [90m-> null[0m[0m
-      [33m~[0m[0m shm_size          = 64 -> (known after apply)
-      [31m-[0m[0m sysctls           = {} [90m-> null[0m[0m
-      [31m-[0m[0m tmpfs             = {} [90m-> null[0m[0m
-      [32m+[0m[0m user              = (known after apply)
-      [33m~[0m[0m working_dir       = "/" -> (known after apply)
-        [90m# (11 unchanged attributes hidden)[0m[0m
+[1m  # docker_container.web1[0m will be created
+[0m  [32m+[0m[0m resource "docker_container" "web1" {
+      [32m+[0m[0m attach           = false
+      [32m+[0m[0m bridge           = (known after apply)
+      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m container_logs   = (known after apply)
+      [32m+[0m[0m dns              = (known after apply)
+      [32m+[0m[0m dns_opts         = (known after apply)
+      [32m+[0m[0m entrypoint       = (known after apply)
+      [32m+[0m[0m exit_code        = (known after apply)
+      [32m+[0m[0m gateway          = (known after apply)
+      [32m+[0m[0m hostname         = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m image            = "nginxdemos/hello:latest"
+      [32m+[0m[0m ip_address       = (known after apply)
+      [32m+[0m[0m ip_prefix_length = (known after apply)
+      [32m+[0m[0m ipc_mode         = (known after apply)
+      [32m+[0m[0m log_driver       = (known after apply)
+      [32m+[0m[0m log_opts         = (known after apply)
+      [32m+[0m[0m logs             = false
+      [32m+[0m[0m must_run         = true
+      [32m+[0m[0m name             = "web1"
+      [32m+[0m[0m network_data     = (known after apply)
+      [32m+[0m[0m read_only        = false
+      [32m+[0m[0m restart          = "no"
+      [32m+[0m[0m rm               = false
+      [32m+[0m[0m shm_size         = (known after apply)
+      [32m+[0m[0m start            = true
+      [32m+[0m[0m user             = (known after apply)
+      [32m+[0m[0m working_dir      = (known after apply)
 
-        [90m# (1 unchanged block hidden)[0m[0m
+      [32m+[0m[0m networks_advanced {
+          [32m+[0m[0m aliases      = []
+          [32m+[0m[0m ipv4_address = "172.28.0.11"
+          [32m+[0m[0m name         = "lab3b_net"
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
     }
 
-[1m  # docker_container.web2[0m must be [1m[31mreplaced[0m
-[0m[31m-[0m/[32m+[0m[0m resource "docker_container" "web2" {
-      [32m+[0m[0m bridge            = (known after apply)
-      [33m~[0m[0m command           = [
-          [31m-[0m[0m "nginx",
-          [31m-[0m[0m "-g",
-          [31m-[0m[0m "daemon off;",
-        ] -> (known after apply)
-      [32m+[0m[0m container_logs    = (known after apply)
-      [31m-[0m[0m cpu_shares        = 0 [90m-> null[0m[0m
-      [33m~[0m[0m dns               = [] -> (known after apply)
-      [33m~[0m[0m dns_opts          = [] -> (known after apply)
-      [31m-[0m[0m dns_search        = [] [90m-> null[0m[0m
-      [33m~[0m[0m entrypoint        = [
-          [31m-[0m[0m "/docker-entrypoint.sh",
-        ] -> (known after apply)
-      [32m+[0m[0m exit_code         = (known after apply)
-      [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
-      [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "53c322431218" -> (known after apply)
-      [33m~[0m[0m id                = "53c322431218a63c7cb8a95800f1d4f91fb3ff0e1f7071bbe20dc3051c4e2ee6" -> (known after apply)
-      [33m~[0m[0m image             = "sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6" [33m->[0m[0m "nginxdemos/hello:latest" [31m# forces replacement[0m[0m
-      [33m~[0m[0m ip_address        = "172.28.0.12" -> (known after apply)
-      [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
-      [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
-      [31m-[0m[0m links             = [] [90m-> null[0m[0m
-      [33m~[0m[0m log_driver        = "json-file" -> (known after apply)
-      [33m~[0m[0m log_opts          = {} -> (known after apply)
-      [31m-[0m[0m max_retry_count   = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory            = 0 [90m-> null[0m[0m
-      [31m-[0m[0m memory_swap       = 0 [90m-> null[0m[0m
-        name              = "web2"
-      [33m~[0m[0m network_data      = [
-          [31m-[0m[0m {
-              [31m-[0m[0m gateway          = "172.28.0.1"
-              [31m-[0m[0m ip_address       = "172.28.0.12"
-              [31m-[0m[0m ip_prefix_length = 16
-              [31m-[0m[0m network_name     = "lab3b_net"
-            },
-        ] -> (known after apply)
-      [31m-[0m[0m network_mode      = "bridge" [90m-> null[0m[0m [31m# forces replacement[0m[0m
-      [31m-[0m[0m privileged        = false [90m-> null[0m[0m
-      [31m-[0m[0m publish_all_ports = false [90m-> null[0m[0m
-      [33m~[0m[0m shm_size          = 64 -> (known after apply)
-      [31m-[0m[0m sysctls           = {} [90m-> null[0m[0m
-      [31m-[0m[0m tmpfs             = {} [90m-> null[0m[0m
-      [32m+[0m[0m user              = (known after apply)
-      [33m~[0m[0m working_dir       = "/" -> (known after apply)
-        [90m# (11 unchanged attributes hidden)[0m[0m
+[1m  # docker_container.web2[0m will be created
+[0m  [32m+[0m[0m resource "docker_container" "web2" {
+      [32m+[0m[0m attach           = false
+      [32m+[0m[0m bridge           = (known after apply)
+      [32m+[0m[0m command          = (known after apply)
+      [32m+[0m[0m container_logs   = (known after apply)
+      [32m+[0m[0m dns              = (known after apply)
+      [32m+[0m[0m dns_opts         = (known after apply)
+      [32m+[0m[0m entrypoint       = (known after apply)
+      [32m+[0m[0m exit_code        = (known after apply)
+      [32m+[0m[0m gateway          = (known after apply)
+      [32m+[0m[0m hostname         = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m image            = "nginxdemos/hello:latest"
+      [32m+[0m[0m ip_address       = (known after apply)
+      [32m+[0m[0m ip_prefix_length = (known after apply)
+      [32m+[0m[0m ipc_mode         = (known after apply)
+      [32m+[0m[0m log_driver       = (known after apply)
+      [32m+[0m[0m log_opts         = (known after apply)
+      [32m+[0m[0m logs             = false
+      [32m+[0m[0m must_run         = true
+      [32m+[0m[0m name             = "web2"
+      [32m+[0m[0m network_data     = (known after apply)
+      [32m+[0m[0m read_only        = false
+      [32m+[0m[0m restart          = "no"
+      [32m+[0m[0m rm               = false
+      [32m+[0m[0m shm_size         = (known after apply)
+      [32m+[0m[0m start            = true
+      [32m+[0m[0m user             = (known after apply)
+      [32m+[0m[0m working_dir      = (known after apply)
 
-        [90m# (1 unchanged block hidden)[0m[0m
+      [32m+[0m[0m networks_advanced {
+          [32m+[0m[0m aliases      = []
+          [32m+[0m[0m ipv4_address = "172.28.0.12"
+          [32m+[0m[0m name         = "lab3b_net"
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
     }
 
 [1m  # docker_container.web3[0m will be created
@@ -273,25 +216,49 @@ Terraform will perform the following actions:
         }
     }
 
-[1mPlan:[0m 5 to add, 0 to change, 4 to destroy.
-[0m[0m[1mdocker_container.web2: Destroying... [id=53c322431218a63c7cb8a95800f1d4f91fb3ff0e1f7071bbe20dc3051c4e2ee6][0m[0m
-[0m[1mdocker_container.haproxy: Destroying... [id=b775c80759829cc22abfdb557b5c1f35842da2a0ea415d3ba76894fd480a9a64][0m[0m
-[0m[1mdocker_container.web1: Destroying... [id=9c9a446ed30d45289d6d8b64e2c423ac9629ee80457bfd90b1d82ece88013cc5][0m[0m
-[0m[1mdocker_container.client: Destroying... [id=6488f576dd646cfb6452ef29f467cb2c4bbe86374504ce0501a4b7639dac04c3][0m[0m
-[0m[1mdocker_container.web3: Creating...[0m[0m
-[0m[1mdocker_container.web2: Destruction complete after 0s[0m
-[0m[1mdocker_container.client: Destruction complete after 0s[0m
-[0m[1mdocker_container.web2: Creating...[0m[0m
-[0m[1mdocker_container.client: Creating...[0m[0m
-[0m[1mdocker_container.haproxy: Destruction complete after 0s[0m
-[0m[1mdocker_container.web1: Destruction complete after 0s[0m
-[0m[1mdocker_container.web1: Creating...[0m[0m
-[0m[1mdocker_container.haproxy: Creating...[0m[0m
-[0m[1mdocker_container.web3: Creation complete after 0s [id=ed98ade1c7c1fff52e0613dbfad3d087c96da740ef0567c47cc3cfd49ff13104][0m
-[0m[1mdocker_container.client: Creation complete after 1s [id=5be9021522873a1b645ceff7d0c5e8bfb1ce30bc949af563e60123b6dfeb345c][0m
-[0m[1mdocker_container.web2: Creation complete after 1s [id=e23d2665a6b249a6d1928d5eada53e1309da6b6f5137f0dc2f4b911284d15eb4][0m
-[0m[1mdocker_container.web1: Creation complete after 1s [id=f2f4e2c3b709939a66869ac96e593bd2b424d39bc763e34d829db7d0b10a99c1][0m
-[0m[1mdocker_container.haproxy: Creation complete after 1s [id=634e33e4f7c0815526a545925e904aa79fac1ad3a04d1290d517fd3743348ef7][0m
-[0m[1m[32m
-Apply complete! Resources: 5 added, 0 changed, 4 destroyed.
-[0m
+[1m  # docker_image.curl[0m will be created
+[0m  [32m+[0m[0m resource "docker_image" "curl" {
+      [32m+[0m[0m id     = (known after apply)
+      [32m+[0m[0m latest = (known after apply)
+      [32m+[0m[0m name   = "curlimages/curl:latest"
+    }
+
+[1m  # docker_image.haproxy_img[0m will be created
+[0m  [32m+[0m[0m resource "docker_image" "haproxy_img" {
+      [32m+[0m[0m id     = (known after apply)
+      [32m+[0m[0m latest = (known after apply)
+      [32m+[0m[0m name   = "haproxy:latest"
+    }
+
+[1m  # docker_image.web_img[0m will be created
+[0m  [32m+[0m[0m resource "docker_image" "web_img" {
+      [32m+[0m[0m id     = (known after apply)
+      [32m+[0m[0m latest = (known after apply)
+      [32m+[0m[0m name   = "nginxdemos/hello:latest"
+    }
+
+[1m  # docker_network.labnet[0m will be created
+[0m  [32m+[0m[0m resource "docker_network" "labnet" {
+      [32m+[0m[0m driver      = "bridge"
+      [32m+[0m[0m id          = (known after apply)
+      [32m+[0m[0m internal    = (known after apply)
+      [32m+[0m[0m ipam_driver = "default"
+      [32m+[0m[0m name        = "lab3b_net"
+      [32m+[0m[0m options     = (known after apply)
+      [32m+[0m[0m scope       = (known after apply)
+
+      [32m+[0m[0m ipam_config {
+          [32m+[0m[0m gateway  = "172.28.0.1"
+          [32m+[0m[0m subnet   = "172.28.0.0/16"
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1mPlan:[0m 9 to add, 0 to change, 0 to destroy.
+[0m[0m[1mdocker_image.web_img: Creating...[0m[0m
+[0m[1mdocker_image.curl: Creating...[0m[0m
+[0m[1mdocker_image.haproxy_img: Creating...[0m[0m
+[0m[1mdocker_network.labnet: Creating...[0m[0m
+[0m[1mdocker_image.curl: Creation complete after 0s [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
+[0m[1mdocker_image.web_img: Creation complete after 0s [id=sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6nginxdemos/hello:latest][0m
+[0m[1mdocker_image.haproxy_img: Creation complete after 0s [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
