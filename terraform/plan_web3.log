@@ -1,12 +1,12 @@
-[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
-[0m[1mdocker_image.web_img: Refreshing state... [id=sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6nginxdemos/hello:latest][0m
 [0m[1mdocker_image.curl: Refreshing state... [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
-[0m[1mdocker_network.labnet: Refreshing state... [id=lab3b_net][0m
-[0m[1mdocker_container.client: Refreshing state... [id=4bbf6358a8c6aa3282f30e4d98194fb9df2bfa1a21a748077e91a351e6c3a2ee][0m
-[0m[1mdocker_container.web3: Refreshing state... [id=4fa2a7ef8f85fbd4c46572b1dbceda13f29adb8ebda577a35cd563c157d2c2d9][0m
-[0m[1mdocker_container.haproxy: Refreshing state... [id=239f77ca569c04c673a2704bb7884e367eb47359dd5930488fa80b7f9a9e9b62][0m
-[0m[1mdocker_container.web2: Refreshing state... [id=debda2935ff1ff4c489acf0e2d9827f4beeb741386fecb5ff65ef6444b038efc][0m
-[0m[1mdocker_container.web1: Refreshing state... [id=71d5c13f02414c9e7c62af0ca302e0f485ef9b239334dae433c30dc771fbee8f][0m
+[0m[1mdocker_image.web_img: Refreshing state... [id=sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6nginxdemos/hello:latest][0m
+[0m[1mdocker_network.labnet: Refreshing state... [id=ce65a9e09e11ce7a213baa758339806e858753a6c66ae56d71303a3031d7be1c][0m
+[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
+[0m[1mdocker_container.web3: Refreshing state... [id=7c87378305a1285713432ccbd57dc65ce2979ed99bccaf7bf74750d5c446a115][0m
+[0m[1mdocker_container.haproxy: Refreshing state... [id=72f36c17eb90753fd224944626fc834500cbc7d35ff81545c4af118e8c607b2f][0m
+[0m[1mdocker_container.client: Refreshing state... [id=6ae38eac9ed8c5537296a48afa57d854047cc5cd1bfad876f9745007a2d031a1][0m
+[0m[1mdocker_container.web1: Refreshing state... [id=b37fdab8604b0c373b37049409fc21edb520a3fab4095bcb8b3c67b686b99239][0m
+[0m[1mdocker_container.web2: Refreshing state... [id=c32d1fd9c2d909c6d4641f216b845b4b2d849fa91b97ce9afc8bf4e8d8d829f0][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -28,8 +28,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "4bbf6358a8c6" -> (known after apply)
-      [33m~[0m[0m id                = "4bbf6358a8c6aa3282f30e4d98194fb9df2bfa1a21a748077e91a351e6c3a2ee" -> (known after apply)
+      [33m~[0m[0m hostname          = "6ae38eac9ed8" -> (known after apply)
+      [33m~[0m[0m id                = "6ae38eac9ed8c5537296a48afa57d854047cc5cd1bfad876f9745007a2d031a1" -> (known after apply)
       [33m~[0m[0m image             = "sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044" [33m->[0m[0m "curlimages/curl:latest" [31m# forces replacement[0m[0m
       [33m~[0m[0m ip_address        = "172.28.0.20" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
@@ -81,8 +81,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "239f77ca569c" -> (known after apply)
-      [33m~[0m[0m id                = "239f77ca569c04c673a2704bb7884e367eb47359dd5930488fa80b7f9a9e9b62" -> (known after apply)
+      [33m~[0m[0m hostname          = "72f36c17eb90" -> (known after apply)
+      [33m~[0m[0m id                = "72f36c17eb90753fd224944626fc834500cbc7d35ff81545c4af118e8c607b2f" -> (known after apply)
       [33m~[0m[0m image             = "sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591" [33m->[0m[0m "haproxy:latest" [31m# forces replacement[0m[0m
       [33m~[0m[0m ip_address        = "172.28.0.10" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
@@ -146,8 +146,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "71d5c13f0241" -> (known after apply)
-      [33m~[0m[0m id                = "71d5c13f02414c9e7c62af0ca302e0f485ef9b239334dae433c30dc771fbee8f" -> (known after apply)
+      [33m~[0m[0m hostname          = "b37fdab8604b" -> (known after apply)
+      [33m~[0m[0m id                = "b37fdab8604b0c373b37049409fc21edb520a3fab4095bcb8b3c67b686b99239" -> (known after apply)
       [33m~[0m[0m image             = "sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6" [33m->[0m[0m "nginxdemos/hello:latest" [31m# forces replacement[0m[0m
       [33m~[0m[0m ip_address        = "172.28.0.11" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
@@ -199,8 +199,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "debda2935ff1" -> (known after apply)
-      [33m~[0m[0m id                = "debda2935ff1ff4c489acf0e2d9827f4beeb741386fecb5ff65ef6444b038efc" -> (known after apply)
+      [33m~[0m[0m hostname          = "c32d1fd9c2d9" -> (known after apply)
+      [33m~[0m[0m id                = "c32d1fd9c2d909c6d4641f216b845b4b2d849fa91b97ce9afc8bf4e8d8d829f0" -> (known after apply)
       [33m~[0m[0m image             = "sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6" [33m->[0m[0m "nginxdemos/hello:latest" [31m# forces replacement[0m[0m
       [33m~[0m[0m ip_address        = "172.28.0.12" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
@@ -252,8 +252,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "4fa2a7ef8f85" -> (known after apply)
-      [33m~[0m[0m id                = "4fa2a7ef8f85fbd4c46572b1dbceda13f29adb8ebda577a35cd563c157d2c2d9" -> (known after apply)
+      [33m~[0m[0m hostname          = "7c87378305a1" -> (known after apply)
+      [33m~[0m[0m id                = "7c87378305a1285713432ccbd57dc65ce2979ed99bccaf7bf74750d5c446a115" -> (known after apply)
       [33m~[0m[0m image             = "sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6" [33m->[0m[0m "nginxdemos/hello:latest" [31m# forces replacement[0m[0m
       [33m~[0m[0m ip_address        = "172.28.0.13" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)

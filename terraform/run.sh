@@ -95,11 +95,11 @@ EOF
   fi
 }
 
-# Function: HTTP check helper
+# Function: HTTP check helper (from inside client)
 check_url() {
   local DESC=$1 TARGET=$2
   echo
-  echo ">>> Testing $DESC:"
+  echo ">>> Testing $DESC from client:"
   for i in {1..4}; do
     code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" "$TARGET")
     if [ "$code" != "200" ]; then
@@ -107,6 +107,22 @@ check_url() {
       exit 1
     else
       echo "   ✔ Request $i OK (HTTP $code)"
+    fi
+  done
+}
+
+# Function: HTTP check helper on host
+check_host_url() {
+  local DESC=$1 URL=$2
+  echo
+  echo ">>> Testing $DESC on host:"
+  for i in {1..4}; do
+    code=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+    if [ "$code" != "200" ]; then
+      echo "   ✖ Host request $i failed (HTTP $code)" >&2
+      exit 1
+    else
+      echo "   ✔ Host request $i OK (HTTP $code)"
     fi
   done
 }
@@ -135,14 +151,21 @@ deploy() {
 # Function: test connectivity and load balancing
 test_lb() {
   echo
+  echo ">>> IP assignments:"
+  echo "  - haproxy: 172.18.0.10"
+  echo "  - web1:    172.18.0.11"
+  echo "  - web2:    172.18.0.12"
+  echo "  - client:  172.18.0.20"
+
+  echo
   echo ">>> Waiting for containers to initialize..."
   sleep 5
 
-  check_url "load balancing from client" haproxy:80
-  check_url "host access via port 8080" http://localhost:8080
+  check_url "load balancing" haproxy:80
+  check_host_url "host access via port 8080" http://localhost:8080
 }
 
-# Function: resilience test
+# Function: resilience test (one backend down)
 resilience_test() {
   echo
   echo ">>> Resilience test: stopping web2"
@@ -163,6 +186,27 @@ resilience_test() {
   sleep 2
 }
 
+# Function: total failure test (both backends down)
+test_total_failure() {
+  echo
+  echo ">>> Total failure test: stopping web1 & web2"
+  docker stop web1 web2
+  sleep 2
+
+  echo ">>> Request after stopping both web1 & web2:"
+  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80 || true)
+  if [ "$code" = "503" ]; then
+    echo "   ✔ Got HTTP 503 as expected when no backends are up"
+  else
+    echo "   ✖ Unexpected HTTP $code; HAProxy did not return 503" >&2
+    exit 1
+  fi
+
+  echo ">>> Restarting web1 & web2"
+  docker start web1 web2
+  sleep 2
+}
+
 # Function: add web3 and reapply
 add_web3() {
   echo
@@ -171,11 +215,10 @@ add_web3() {
     cat << 'EOF' >> main.tf
 
 resource "docker_container" "web3" {
-  name            = "web3"
-  image           = docker_image.web_img.name
+  name  = "web3"
+  image = docker_image.web_img.name
   networks_advanced {
-    name         = docker_network.labnet.name
-    # you can omit ipv4_address for Docker DNS
+    name = docker_network.labnet.name
   }
 }
 EOF
@@ -183,7 +226,6 @@ EOF
     echo "   web3 resource already present, skipping."
   fi
 
-  # regenerate haproxy.cfg to include web3
   generate_haproxy_cfg
 
   echo
@@ -202,6 +244,7 @@ import_containers
 deploy
 test_lb
 resilience_test
+test_total_failure
 add_web3
 
 echo
