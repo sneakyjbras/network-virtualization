@@ -1,3 +1,6 @@
+[0m[1mdocker_image.curl: Refreshing state... [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
+[0m[1mdocker_image.web_img: Refreshing state... [id=sha256:cf49c37eb33018fd1660a652da67dcdbdf55996ae3c22bb80cd733dbf8ded8c6nginxdemos/hello:latest][0m
+[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -216,27 +219,6 @@ Terraform will perform the following actions:
         }
     }
 
-[1m  # docker_image.curl[0m will be created
-[0m  [32m+[0m[0m resource "docker_image" "curl" {
-      [32m+[0m[0m id     = (known after apply)
-      [32m+[0m[0m latest = (known after apply)
-      [32m+[0m[0m name   = "curlimages/curl:latest"
-    }
-
-[1m  # docker_image.haproxy_img[0m will be created
-[0m  [32m+[0m[0m resource "docker_image" "haproxy_img" {
-      [32m+[0m[0m id     = (known after apply)
-      [32m+[0m[0m latest = (known after apply)
-      [32m+[0m[0m name   = "haproxy:latest"
-    }
-
-[1m  # docker_image.web_img[0m will be created
-[0m  [32m+[0m[0m resource "docker_image" "web_img" {
-      [32m+[0m[0m id     = (known after apply)
-      [32m+[0m[0m latest = (known after apply)
-      [32m+[0m[0m name   = "nginxdemos/hello:latest"
-    }
-
 [1m  # docker_network.labnet[0m will be created
 [0m  [32m+[0m[0m resource "docker_network" "labnet" {
       [32m+[0m[0m driver      = "bridge"
@@ -254,7 +236,7 @@ Terraform will perform the following actions:
         }
     }
 
-[1mPlan:[0m 9 to add, 0 to change, 0 to destroy.
+[1mPlan:[0m 6 to add, 0 to change, 0 to destroy.
 [0m[90m
 ─────────────────────────────────────────────────────────────────────────────[0m
 
