@@ -189,40 +189,28 @@ resilience_test() {
   sleep 2
 }
 
-
-
 # Function: add web3 and reapply
 add_web3() {
   echo
-  echo ">>> Adding web3 resource to main.tf (idempotent)"
-  if ! grep -q 'resource "docker_container" "web3"' main.tf; then
-     cat << 'EOF' >> main.tf
-
-resource "docker_container" "web3" {
-  name  = "web3"
-  image = docker_image.nginx_img.latest
-  networks_advanced {
-    name = docker_network.labnet.name
-  }
-}
-EOF
-  else
-    echo "   web3 resource already present, skipping."
-  fi
-
+  echo ">>> Regenerating HAProxy config to include web3…"
   generate_haproxy_cfg
 
   echo
-  echo ">>> Terraform plan for web3 addition (logged to plan_web3.log):"
-  terraform plan -input=false | tee plan_web3.log
   echo ">>> Terraform plan for web3 only (logged to plan_web3.log):"
-  terraform plan -target=docker_container.web3 -input=false | tee plan_web3.log
+  terraform plan \
+    -var enable_web3=true \
+    -target=docker_container.web3 \
+    -input=false \
+  | tee plan_web3.log
 
   echo
-  echo ">>> Terraform apply for web3 addition (logged to apply_web3.log):"
-  terraform apply -auto-approve -input=false | tee apply_web3.log
   echo ">>> Terraform apply for web3 only (logged to apply_web3.log):"
-  terraform apply -target=docker_container.web3 -auto-approve -input=false | tee apply_web3.log
+  terraform apply \
+    -var enable_web3=true \
+    -target=docker_container.web3 \
+    -auto-approve \
+    -input=false \
+  | tee apply_web3.log
 }
 
 test_web3() {

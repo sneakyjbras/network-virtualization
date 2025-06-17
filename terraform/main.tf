@@ -109,7 +109,15 @@ resource "docker_container" "client" {
   }
 }
 
+variable "enable_web3" {
+  type    = bool
+  default = false
+  description = "Whether to create web3"
+}
+
 resource "docker_container" "web3" {
+  count = var.enable_web3 ? 1 : 0
+
   name  = "web3"
   image = docker_image.nginx_img.latest
 
