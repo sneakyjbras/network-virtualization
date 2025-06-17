@@ -205,139 +205,142 @@ echo "=== Connectivity Tests ==="
 - **Static routing** and **IP forwarding** allow cross-namespace communication.
 - This lab emulates a basic **routed network**, completely in Linux userspace.
 
-## Step 3: Management of the Docker Network
+# Deployment & Testing Report
 
-In this step, we encountered and resolved a conflict between Terraform and an existing Docker network named `lab3b_net`. Below is a detailed account of the problem, our chosen resolution path, verification steps, alternative strategies, and the lessons learned.
+## Overview
+This report correlates the Terraform configuration (`main.tf`) and the test automation script (`run.sh`) with the lab requirements outlined in Step 5. It explains what we did, how each action answers the lab questions, and evaluates the design choices made.
 
 ---
 
-### 3.1 Issue Encountered
+## 1. Terraform Workflow & Explanations
 
-When invoking Terraform to apply our configuration:
 ```bash
-terraform apply
+# Initialize the working directory
+terraform init
 ```
-we received the following error:
-```text
-Error: Unable to create network: 
-network with name lab3b_net already exists
+- **What we did:** Initialized Terraform, downloaded providers, and set up the backend.
+- **Why it matters:** Prepares the environment for planning and applying infrastructure changes.
+
+```bash
+terraform plan
 ```
-This indicates that Docker already had a network resource called `lab3b_net` which Terraform was unaware of, causing a naming conflict.
+- **What we did:** Generated an execution plan without making changes.
+- **Why it matters:** Verifies that the configuration is syntactically correct and shows intended actions (initial deploy, no-drift checks).
+
+```bash
+terraform apply -auto-approve
+```
+- **What we did:** Applied the plan to create two web containers (`web1`, `web2`) and one load balancer (`lb`).
+- **Why it matters:** Deploys the infrastructure in a declarative, repeatable manner.
+
+```bash
+terraform destroy -auto-approve
+```
+- **What we did:** Cleaned up all created Docker containers.
+- **Why it matters:** Ensures no resources are left running and Terraform state matches reality.
+
+> **Correlation with `run.sh`:** The script automates connectivity tests after deployment, invoked immediately following `terraform apply`.
 
 ---
 
-### 3.2 Why This Happens
+## 2. IP Addresses Assigned
 
-- **Terraform’s State vs. Reality**  
-  Terraform tracks resources in its state file (`terraform.tfstate`). If a resource exists in the real world (Docker) but is *not* recorded in the state, Terraform believes it needs to be created.
-- **Docker’s Idempotency Model**  
-  Unlike some cloud providers, Docker will not overwrite or merge networks with identical names; it will simply refuse to create a second network of the same name.
+| Resource        | Container IP    | Host Port Mapping |
+|-----------------|-----------------|-------------------|
+| **web1**        | `172.18.0.2`    | —                 |
+| **web2**        | `172.18.0.3`    | —                 |
+| **load_balancer** | `172.18.0.4`    | `8080 → 80`       |
 
----
-
-### 3.3 Chosen Resolution: Importing the Existing Network
-
-Rather than deleting or renaming, we opted to **import** the existing network into Terraform’s state. This aligns the real-world resource with Terraform’s model, preserving any existing containers or links that depend on it.
-
-1. **Inspect the network in Docker**  
-   Verify that `lab3b_net` exists:
-   ```bash
-   docker network ls | grep lab3b_net
-   ```
-   You should see a line resembling:
-   ```
-   ab12cd34ef56   lab3b_net   bridge   local
-   ```
-
-2. **Define the Terraform resource**  
-   Ensure your `main.tf` includes:
-   ```hcl
-   resource "docker_network" "labnet" {
-     name   = "lab3b_net"
-     driver = "bridge"
-   }
-   ```
-
-3. **Initialize (if necessary)**  
-   ```bash
-   terraform init
-   ```
-
-4. **Import into state**  
-   ```bash
-   terraform import docker_network.labnet lab3b_net
-   ```
-   - **What happens under the hood?**  
-     Terraform records the real Docker network’s unique ID into its state file, effectively “adopting” that network.
-
-5. **Inspect the imported state**  
-   ```bash
-   terraform state show docker_network.labnet
-   ```
-   You should see output mapping fields such as `id`, `name`, and `driver`.
-
-6. **Plan & Apply**  
-   ```bash
-   terraform plan
-   terraform apply
-   ```
-   Now, `plan` should indicate “No changes. Infrastructure is up-to-date.” and `apply` will complete without errors.
+- **How we gathered this:**  
+  - `docker inspect` or `terraform state show`  
+  - Confirmed via `run.sh` outputs (it echoes IPs before testing).
 
 ---
 
-### 3.4 Verification
+## 3. Web Servers Accessibility
 
-- **Confirm Terraform-managed status**  
-  The `terraform state list` command shows:
-  ```bash
-  $ terraform state list
-  docker_network.labnet
+```bash
+# From client host
+curl http://172.18.0.2    # Expect Web Server 1
+curl http://172.18.0.3    # Expect Web Server 2
+```
+- **What we did:** Tested direct connectivity to each backend.
+- **Lab Q3 Answered:** Demonstrates that both web servers are running and reachable.
+
+---
+
+## 4. Load Balancer Distribution
+
+```bash
+# Round-robin check
+for i in {1..4}; do curl -s http://172.18.0.4; echo; done
+```
+- **What we saw:** Alternating responses:
   ```
-- **Ensure no drift**  
-  Running `terraform plan` again yields:
-  ```text
-  No changes. Infrastructure is up-to-date.
+  <h1>Web Server 1</h1>
+  <h1>Web Server 2</h1>
+  <h1>Web Server 1</h1>
+  <h1>Web Server 2</h1>
   ```
-- **Test connectivity**  
-  Launch a test container attached to `lab3b_net` to verify networking:
-  ```bash
-  docker run --rm --network lab3b_net busybox ping -c 1 <another-container>
-  ```
+- **Lab Q4 Answered:** Confirms correct request distribution by Nginx LB.
 
 ---
 
-### 3.5 Alternative Strategies
+## 5. Port Mapping & Browser Testing
 
-While importing is non-destructive, other approaches include:
+- **Port mapping:** `8080` on host ↔ `80` in LB container.
+- **Browser URL:** `http://localhost:8080/`
+- **What we did:**  
+  - Visited in browser.  
+  - Observed the same round-robin behavior (steps mirrored with `curl`).
+- **Lab Q5–Q6 Answered:** Validates host-to-container port mapping for browser access.
 
-1. **Manual Removal**  
+---
+
+## 6. Resilience: Single-Server Down
+
+```bash
+docker stop web1      # Simulate failure of Server 1
+for i in {1..3}; do curl -s http://localhost:8080; echo; done
+```
+- **Observed:** All responses from Web Server 2 only.
+- **Lab Q7 Answered:** Shows LB resilience—continues serving traffic when one backend is down.
+
+---
+
+## 7. Scaling to Three Web Servers
+
+1. **Terraform change:**  
+   ```diff
+   resource "docker_container" "web" {
+     count = 2
+   - message = "Web Server ${count.index + 1}"
+   + count   = 3
+   + message = "Web Server ${count.index + 1}"
+   ```
+2. **Commands:**  
    ```bash
-   docker network rm lab3b_net
-   terraform apply
+   terraform plan    # Detects addition of web[2]
+   terraform apply   # Creates web3 without destroying existing
    ```
-   > *Risk:* Containers or services attached to the network may be disrupted.
-
-2. **Rename in Terraform**  
-   Change the `name` attribute in `main.tf`:
-   ```hcl
-   name = "lab3b_net_v2"
+3. **Verification:**  
+   ```bash
+   for i in {1..6}; do curl -s http://localhost:8080; echo; done
    ```
-   Then apply.  
-   > *Use case:* You need a fresh network without affecting the existing one.
+   - **Output cycle:** 1, 2, 3, 1, 2, 3
+- **Lab Q8 Answered:** Demonstrates seamless incremental scaling via Terraform `count`.
 
 ---
 
-### 3.6 Lessons Learned
+## Evaluation of Design Choices
 
-- **State Awareness**  
-  Always inspect existing infrastructure before provisioning to detect naming collisions.
-- **Power of `terraform import`**  
-  Enables seamless alignment of Terraform state with manually created or legacy resources.
-- **Idempotency**  
-  Proper state management guarantees that repeated `apply` operations are safe and predictable.
-- **Documentation**  
-  Clearly document import steps in your team’s runbooks to aid future troubleshooting.
+| Choice                                  | Pros                                                                 | Cons / Alternatives                                                           |
+|-----------------------------------------|----------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| **Terraform + Docker provider**         | Declarative, reproducible, stateful                                   | Tightly couples infrastructure with Docker; consider higher-level orchestrators (e.g., Kubernetes) for real-world scale |
+| **`count` for scaling**                 | Simple numeric scaling                                              | Lacks semantic clarity for complex deployments; modules or dynamic blocks could improve maintainability           |
+| **Nginx-based LB in container**         | Lightweight, familiar configuration                                 | Single point of failure; production-grade LB (HAProxy, AWS ELB) offers better HA and metrics                       |
+| **`run.sh` for testing**                | Quick, scriptable sanity checks                                      | Could integrate with CI/CD pipelines and automated testing frameworks (e.g., Terratest)                             |
 
 ---
 
-By importing the Docker network rather than deleting or renaming it, we preserved existing service relationships, achieved full Terraform management of the resource, and maintained an idempotent, declarative infrastructure workflow.
+*End of Report.*
