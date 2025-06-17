@@ -1,12 +1,12 @@
 [0m[1mdocker_image.curl: Refreshing state... [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
-[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
 [0m[1mdocker_image.nginx_img: Refreshing state... [id=sha256:6769dc3a703c719c1d2756bda113659be28ae16cf0da58dd5fd823d6b9a050eanginx:alpine][0m
+[0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
 [0m[1mdocker_network.labnet: Refreshing state... [id=lab3b_net][0m
-[0m[1mdocker_container.haproxy: Refreshing state... [id=05071a25f1280850783bcb1e98178e70167e814431d59adade8222de4ce6dffd][0m
-[0m[1mdocker_container.web1: Refreshing state... [id=6ae6d4c1dcf68892dc72c68f315fdd368f0b6601fdc85b78470720655c9814b7][0m
-[0m[1mdocker_container.client: Refreshing state... [id=3be153e1d358c7a6b81db35d877d55ae2e494a031f5046b8d9874ee345d34efb][0m
-[0m[1mdocker_container.web3: Refreshing state... [id=b202f2569ecf4d1331ae147d5876c3d2674dcd6aab11332686bba4b8a874891a][0m
-[0m[1mdocker_container.web2: Refreshing state... [id=1574d2a31c6a8459b3c8647b26adb441f800a5d01d1b25405822c8c39e66cdc5][0m
+[0m[1mdocker_container.web1: Refreshing state... [id=9acd0af72e47a11920eaeb1a24fc5160daf72e26d9f015dda0143b12bc306328][0m
+[0m[1mdocker_container.web3: Refreshing state... [id=93dad719627442335a5ac2b4005f1a1d8a3c3a3f0b0be5cd28ff5b2c8c03930f][0m
+[0m[1mdocker_container.web2: Refreshing state... [id=4453a5082aa09016f4a6a6c6bedd20ce8578cac911d4d29019abba9a15617885][0m
+[0m[1mdocker_container.client: Refreshing state... [id=1d5c43d57827cc114aed831f590e4f4644392f1fe896de08d6f992b61fca1d9c][0m
+[0m[1mdocker_container.haproxy: Refreshing state... [id=6f61ebd1a49a7c0543f652d125ab74e45b28dff17c3e23881c43fde73fb701f6][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -28,8 +28,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "3be153e1d358" -> (known after apply)
-      [33m~[0m[0m id                = "3be153e1d358c7a6b81db35d877d55ae2e494a031f5046b8d9874ee345d34efb" -> (known after apply)
+      [33m~[0m[0m hostname          = "1d5c43d57827" -> (known after apply)
+      [33m~[0m[0m id                = "1d5c43d57827cc114aed831f590e4f4644392f1fe896de08d6f992b61fca1d9c" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.20" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -80,8 +80,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "05071a25f128" -> (known after apply)
-      [33m~[0m[0m id                = "05071a25f1280850783bcb1e98178e70167e814431d59adade8222de4ce6dffd" -> (known after apply)
+      [33m~[0m[0m hostname          = "6f61ebd1a49a" -> (known after apply)
+      [33m~[0m[0m id                = "6f61ebd1a49a7c0543f652d125ab74e45b28dff17c3e23881c43fde73fb701f6" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.10" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -139,8 +139,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "6ae6d4c1dcf6" -> (known after apply)
-      [33m~[0m[0m id                = "6ae6d4c1dcf68892dc72c68f315fdd368f0b6601fdc85b78470720655c9814b7" -> (known after apply)
+      [33m~[0m[0m hostname          = "9acd0af72e47" -> (known after apply)
+      [33m~[0m[0m id                = "9acd0af72e47a11920eaeb1a24fc5160daf72e26d9f015dda0143b12bc306328" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.11" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -186,8 +186,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "1574d2a31c6a" -> (known after apply)
-      [33m~[0m[0m id                = "1574d2a31c6a8459b3c8647b26adb441f800a5d01d1b25405822c8c39e66cdc5" -> (known after apply)
+      [33m~[0m[0m hostname          = "4453a5082aa0" -> (known after apply)
+      [33m~[0m[0m id                = "4453a5082aa09016f4a6a6c6bedd20ce8578cac911d4d29019abba9a15617885" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.12" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -233,8 +233,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "b202f2569ecf" -> (known after apply)
-      [33m~[0m[0m id                = "b202f2569ecf4d1331ae147d5876c3d2674dcd6aab11332686bba4b8a874891a" -> (known after apply)
+      [33m~[0m[0m hostname          = "93dad7196274" -> (known after apply)
+      [33m~[0m[0m id                = "93dad719627442335a5ac2b4005f1a1d8a3c3a3f0b0be5cd28ff5b2c8c03930f" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.13" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)

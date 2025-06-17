@@ -221,10 +221,14 @@ EOF
   echo
   echo ">>> Terraform plan for web3 addition (logged to plan_web3.log):"
   terraform plan -input=false | tee plan_web3.log
+  echo ">>> Terraform plan for web3 only (logged to plan_web3.log):"
+  terraform plan -target=docker_container.web3 -input=false | tee plan_web3.log
 
   echo
   echo ">>> Terraform apply for web3 addition (logged to apply_web3.log):"
   terraform apply -auto-approve -input=false | tee apply_web3.log
+  echo ">>> Terraform apply for web3 only (logged to apply_web3.log):"
+  terraform apply -target=docker_container.web3 -auto-approve -input=false | tee apply_web3.log
 }
 
 test_web3() {

@@ -70,29 +70,6 @@ resource "docker_container" "web2" {
   }
 }
 
-resource "docker_container" "web3" {
-  name  = "web3"
-  image = docker_image.nginx_img.latest
-
-  command = [
-    "/bin/sh", "-c",
-    <<-EOC
-      IP="$(hostname -i)"
-      cat <<EOF > /usr/share/nginx/html/index.html
-      <!DOCTYPE html>
-      <html><head><title>Served by $${IP}</title></head>
-      <body><h1>$${IP}</h1></body></html>
-      EOF
-      exec nginx -g 'daemon off;'
-    EOC
-  ]
-
-  networks_advanced {
-    name         = docker_network.labnet.name
-    ipv4_address = "172.28.0.13"
-  }
-}
-
 resource "docker_image" "haproxy_img" {
   name = "haproxy:latest"
 }
