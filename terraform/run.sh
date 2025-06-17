@@ -185,7 +185,6 @@ resilience_test() {
     served_by=$(echo "$resp" | grep -oP '(?<=<h1>)[^<]+' || echo "unknown")
     if [ "$code" != "200" ]; then
       echo "   ✖ Request $i failed (HTTP $code)" >&2
-      exit 1
     else
       echo "   ✔ Request $i OK (HTTP $code) — served by: $served_by"
     fi

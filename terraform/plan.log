@@ -1,12 +1,12 @@
 [0m[1mdocker_image.haproxy_img: Refreshing state... [id=sha256:73c9a6a2e39bb5c805fc9d527f58e5e82f5f51fd44177a04f1f6c540bb976591haproxy:latest][0m
 [0m[1mdocker_image.nginx_img: Refreshing state... [id=sha256:6769dc3a703c719c1d2756bda113659be28ae16cf0da58dd5fd823d6b9a050eanginx:alpine][0m
 [0m[1mdocker_image.curl: Refreshing state... [id=sha256:e74447e85ef07be8a848a1fb448615df75fa7ca57f6171663fedcac2fe818044curlimages/curl:latest][0m
-[0m[1mdocker_network.labnet: Refreshing state... [id=003399d8336215c4f91bf10ca01855e25bee8cfed5ea2e619e64da5b5d2f731d][0m
-[0m[1mdocker_container.web1: Refreshing state... [id=33527e42eb5b7fa8af504e243eca34d57cd12aa8b3b01abd7bc76d81e487f023][0m
-[0m[1mdocker_container.web3: Refreshing state... [id=87ee1ee72312b3aeb98566835baf914d0fe1676672476c29a32f43421e035ac7][0m
-[0m[1mdocker_container.haproxy: Refreshing state... [id=0231fe24b1c98bff2ca7ebcc201a29082316f4f535fc78ec8c9ba3f524a4b9d6][0m
-[0m[1mdocker_container.web2: Refreshing state... [id=9356fc21dc66e73b648990f22c408ca76154d9086fac7754eb4bf5293ecfabee][0m
-[0m[1mdocker_container.client: Refreshing state... [id=370b3cf597782502a6d3f8e8691e98ac3952fd7928fafefb490652ba659e0eb1][0m
+[0m[1mdocker_network.labnet: Refreshing state... [id=lab3b_net][0m
+[0m[1mdocker_container.web3: Refreshing state... [id=080a7c7bcea67f73cbfef8f368d266a06d270edea908b984cab48e2899278ac9][0m
+[0m[1mdocker_container.client: Refreshing state... [id=1a9c2c5ad9092ccc28978e6bdec0d758dcfe540a511a10def6772b8c9724de5c][0m
+[0m[1mdocker_container.web1: Refreshing state... [id=fa85d80f3ace776ff9ec52523323a52abdc4760212eb8ac4436458befc5ce8e4][0m
+[0m[1mdocker_container.haproxy: Refreshing state... [id=d40011459b2389bbaa2e8699ebfc4bde5e66c5ce5d484ff0f45c04424528b1a1][0m
+[0m[1mdocker_container.web2: Refreshing state... [id=18c938fc56afac3d7cff8d48ef3ecd34803c7a8a7a8c3249fd20152af88f328a][0m
 
 Terraform used the selected providers to generate the following execution
 plan. Resource actions are indicated with the following symbols:
@@ -29,8 +29,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "370b3cf59778" -> (known after apply)
-      [33m~[0m[0m id                = "370b3cf597782502a6d3f8e8691e98ac3952fd7928fafefb490652ba659e0eb1" -> (known after apply)
+      [33m~[0m[0m hostname          = "1a9c2c5ad909" -> (known after apply)
+      [33m~[0m[0m id                = "1a9c2c5ad9092ccc28978e6bdec0d758dcfe540a511a10def6772b8c9724de5c" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.20" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -81,8 +81,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "0231fe24b1c9" -> (known after apply)
-      [33m~[0m[0m id                = "0231fe24b1c98bff2ca7ebcc201a29082316f4f535fc78ec8c9ba3f524a4b9d6" -> (known after apply)
+      [33m~[0m[0m hostname          = "d40011459b23" -> (known after apply)
+      [33m~[0m[0m id                = "d40011459b2389bbaa2e8699ebfc4bde5e66c5ce5d484ff0f45c04424528b1a1" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.10" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -140,8 +140,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "33527e42eb5b" -> (known after apply)
-      [33m~[0m[0m id                = "33527e42eb5b7fa8af504e243eca34d57cd12aa8b3b01abd7bc76d81e487f023" -> (known after apply)
+      [33m~[0m[0m hostname          = "fa85d80f3ace" -> (known after apply)
+      [33m~[0m[0m id                = "fa85d80f3ace776ff9ec52523323a52abdc4760212eb8ac4436458befc5ce8e4" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.11" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
@@ -238,8 +238,8 @@ Terraform will perform the following actions:
       [32m+[0m[0m exit_code         = (known after apply)
       [33m~[0m[0m gateway           = "172.28.0.1" -> (known after apply)
       [31m-[0m[0m group_add         = [] [90m-> null[0m[0m
-      [33m~[0m[0m hostname          = "87ee1ee72312" -> (known after apply)
-      [33m~[0m[0m id                = "87ee1ee72312b3aeb98566835baf914d0fe1676672476c29a32f43421e035ac7" -> (known after apply)
+      [33m~[0m[0m hostname          = "080a7c7bcea6" -> (known after apply)
+      [33m~[0m[0m id                = "080a7c7bcea67f73cbfef8f368d266a06d270edea908b984cab48e2899278ac9" -> (known after apply)
       [33m~[0m[0m ip_address        = "172.28.0.13" -> (known after apply)
       [33m~[0m[0m ip_prefix_length  = 16 -> (known after apply)
       [33m~[0m[0m ipc_mode          = "private" -> (known after apply)
