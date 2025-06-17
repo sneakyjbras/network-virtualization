@@ -1,16 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # run_lab3b_all_in_one_improved.sh - Enhanced orchestration for Lab3B
 # Usage: sudo bash run_lab3b_all_in_one_improved.sh
 
-set -e
+set -euo pipefail
 trap 'cleanup_on_failure' ERR
+
+NET_NAME="lab3b_net"
+TF_RES="docker_network.labnet"
 
 echo "=== Lab3B Full Orchestration Script (Improved) ==="
 cd "$(dirname "$0")"
 
 # Function: cleanup on failure
 cleanup_on_failure() {
-  echo "⚠️ An error occurred. Cleaning up Terraform-managed resources..."
+  echo "⚠ An error occurred. Cleaning up Terraform-managed resources..."
   terraform destroy -auto-approve -input=false || true
   exit 1
 }
@@ -20,14 +23,95 @@ initialize() {
   echo
   echo ">>> Terraform init (locking providers):"
   terraform init -input=false
-  # Check for lock file
   if [ ! -f .terraform.lock.hcl ]; then
     echo "❌ Terraform lock file missing!" >&2
     exit 1
   fi
 }
 
-# Function: format check
+# Function: import existing Docker network if present
+import_network() {
+  echo
+  echo ">>> Checking for existing Docker network '${NET_NAME}'…"
+  if docker network inspect "$NET_NAME" >/dev/null 2>&1; then
+    if ! terraform state show "$TF_RES" >/dev/null 2>&1; then
+      echo "🔄 Importing existing Docker network '${NET_NAME}' into Terraform state…"
+      terraform import "$TF_RES" "$NET_NAME"
+    else
+      echo "✅ '${NET_NAME}' already managed in state."
+    fi
+  else
+    echo "ℹ️  Docker network '${NET_NAME}' not found; Terraform will create it."
+  fi
+}
+
+# Function: import existing Docker containers if present
+import_containers() {
+  echo
+  echo ">>> Checking for existing Docker containers…"
+  for NAME in web1 web2 haproxy client web3; do
+    CON_ID=$(docker inspect --format='{{.Id}}' "$NAME" 2>/dev/null || true)
+    if [ -n "$CON_ID" ]; then
+      if ! terraform state show "docker_container.${NAME}" >/dev/null 2>&1; then
+        echo "🔄 Importing container '${NAME}' (ID=${CON_ID}) into Terraform state…"
+        terraform import "docker_container.${NAME}" "$CON_ID"
+      else
+        echo "✅ Container '${NAME}' already managed in state."
+      fi
+    else
+      echo "ℹ️  Container '${NAME}' not found; Terraform will create it."
+    fi
+  done
+}
+
+# Function: generate a fresh haproxy.cfg using DNS names
+generate_haproxy_cfg() {
+  echo
+  echo ">>> Generating haproxy.cfg for web1/web2${ENABLE_WEB3:+/web3}…"
+  cat > haproxy.cfg << 'EOF'
+global
+    daemon
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend http_front
+    bind *:80
+    default_backend web_servers
+
+backend web_servers
+    balance roundrobin
+    server web1 web1:80 check
+    server web2 web2:80 check
+EOF
+
+  # if web3 already in state, append it
+  if terraform state show docker_container.web3 >/dev/null 2>&1; then
+    echo "    server web3 web3:80 check" >> haproxy.cfg
+  fi
+}
+
+# Function: HTTP check helper
+check_url() {
+  local DESC=$1 TARGET=$2
+  echo
+  echo ">>> Testing $DESC:"
+  for i in {1..4}; do
+    code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" "$TARGET")
+    if [ "$code" != "200" ]; then
+      echo "   ✖ Request $i failed (HTTP $code)" >&2
+      exit 1
+    else
+      echo "   ✔ Request $i OK (HTTP $code)"
+    fi
+  done
+}
+
+# Function: check Terraform format
 format_check() {
   echo
   echo ">>> Checking Terraform formatting:"
@@ -37,6 +121,7 @@ format_check() {
 # Function: deploy initial infra
 deploy() {
   format_check
+  generate_haproxy_cfg
 
   echo
   echo ">>> Terraform plan (logged to plan.log):"
@@ -50,36 +135,11 @@ deploy() {
 # Function: test connectivity and load balancing
 test_lb() {
   echo
-  echo ">>> IP assignments:"
-  echo "  - haproxy: 172.18.0.10"
-  echo "  - web1:    172.18.0.11"
-  echo "  - web2:    172.18.0.12"
-  echo "  - client:  172.18.0.20"
-
-  echo
   echo ">>> Waiting for containers to initialize..."
   sleep 5
 
-  echo
-  echo ">>> Testing load balancing from client:"
-  for i in {1..4}; do
-    echo -n "Request $i: "
-    if ! docker exec client curl -s haproxy:80 | head -n1; then
-      echo "   ✖ Load balancing test failed!" >&2
-      exit 1
-    else
-      echo "   ✔ OK"
-    fi
-  done
-
-  echo
-  echo ">>> Testing host access via port 8080:"
-  if ! curl -s http://localhost:8080 | head -n1; then
-    echo "   ✖ Host access test failed!" >&2
-    exit 1
-  else
-    echo "   ✔ OK"
-  fi
+  check_url "load balancing from client" haproxy:80
+  check_url "host access via port 8080" http://localhost:8080
 }
 
 # Function: resilience test
@@ -88,13 +148,16 @@ resilience_test() {
   echo ">>> Resilience test: stopping web2"
   docker stop web2
   sleep 2
+
   echo ">>> Request after stopping web2:"
-  if ! docker exec client curl -s haproxy:80 | head -n1; then
-    echo "   ✖ Resilience test failed!" >&2
+  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
+  if [ "$code" != "200" ]; then
+    echo "   ✖ Resilience test failed (HTTP $code)" >&2
     exit 1
   else
-    echo "   ✔ OK"
+    echo "   ✔ Resilience OK (HTTP $code)"
   fi
+
   echo ">>> Restarting web2"
   docker start web2
   sleep 2
@@ -108,11 +171,11 @@ add_web3() {
     cat << 'EOF' >> main.tf
 
 resource "docker_container" "web3" {
-  name  = "web3"
-  image = docker_image.web_img.name
+  name            = "web3"
+  image           = docker_image.web_img.name
   networks_advanced {
     name         = docker_network.labnet.name
-    ipv4_address = "172.18.0.13"
+    # you can omit ipv4_address for Docker DNS
   }
 }
 EOF
@@ -120,13 +183,8 @@ EOF
     echo "   web3 resource already present, skipping."
   fi
 
-  echo
-  echo ">>> Adding web3 backend to haproxy.cfg (idempotent)"
-  if ! grep -q 'server web3' haproxy.cfg; then
-    echo "    server web3 172.18.0.13:80 check" >> haproxy.cfg
-  else
-    echo "   web3 backend already present, skipping."
-  fi
+  # regenerate haproxy.cfg to include web3
+  generate_haproxy_cfg
 
   echo
   echo ">>> Terraform plan for web3 addition (logged to plan_web3.log):"
@@ -137,8 +195,10 @@ EOF
   terraform apply -auto-approve -input=false | tee apply_web3.log
 }
 
-# Main execution flow
+# --- Main execution flow ---
 initialize
+import_network
+import_containers
 deploy
 test_lb
 resilience_test
@@ -147,12 +207,12 @@ add_web3
 echo
 echo ">>> Testing load balancing with web3 added:"
 for i in {1..6}; do
-  echo -n "Request $i: "
-  if ! docker exec client curl -s haproxy:80 | head -n1; then
-    echo "   ✖ Load balancing with web3 failed!" >&2
+  code=$(docker exec client curl -s -o /dev/null -w "%{http_code}" haproxy:80)
+  if [ "$code" != "200" ]; then
+    echo "   ✖ Request $i failed (HTTP $code)" >&2
     exit 1
   else
-    echo "   ✔ OK"
+    echo "   ✔ Request $i OK (HTTP $code)"
   fi
 done
 
